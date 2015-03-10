@@ -9,6 +9,7 @@ from scrapy.xlib.pydispatch import dispatcher
 import sqlite3
 from os import path
 
+
 class SQLPipeline(object):
     filepath = 'test.db'
 
@@ -18,12 +19,14 @@ class SQLPipeline(object):
         dispatcher.connect(self.finalize, signals.engine_stopped)
 
     def process_item(self, item, spider):
+        if 'SQLPipeline' not in getattr(spider, 'pipelines'):
+            return item
         try:
             self.conn.execute('INSERT into Authors VALUES(?,?)',
                               (item['user_name'], item['date'],))
         except:
             print 'Failed to insert item: ' + item['user_name']
-        return item
+            return item
 
     def initialize(self):
         if path.exists(self.filepath):

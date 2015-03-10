@@ -6,13 +6,23 @@ from scrapy.contrib.linkextractors import LinkExtractor
 from scrapy.contrib.loader import ItemLoader
 from ..items import PostItem, AuthorItem, TestItem
 
+# scrapy crawl ninfo -o myinfo.csv -t csv
+
+def parse_urls():
+        my_url_list = []
+        with open('url_list.txt', 'r') as f:
+            my_url_list = f.read().strip().split(',')
+        return my_url_list
 
 class DepthSpider(CrawlSpider):
+
     name = "depth"
+    download_delay = 2
     allowed_domains = ["footballsfuture.com"]
-    start_urls = [
-        "http://www.footballsfuture.com/phpBB2/viewforum.php?f=9"
-    ]
+    start_urls = parse_urls()
+
+    pipelines = ['']
+
     rules = (
         # restrict_xpaths =('//span/a[@class = "forumlink]'),callback=('parse_items')
         Rule(LinkExtractor(restrict_xpaths=('//span/a[@class = "forumlink"]'),
@@ -40,6 +50,7 @@ class DepthSpider(CrawlSpider):
         #page = scrapy.Field()
         #team = scrapy.Field()
         #date = scrapy.Field()
+        # abc = datetime.strptime(select_date[0][8:], "%a %b %d, %Y %H:%M %p")
         l1 = ItemLoader(item=TestItem(), response=response)
         l1.add_xpath('post_title', '//tr/td/a[@class = "maintitle"]/text()')
         l1.add_xpath('date', '//tr/td[@width="100%"][1]/span[@class = "postdetails"]/text()')
@@ -66,4 +77,6 @@ class DepthSpider(CrawlSpider):
         #
         # for idx, name in select_names:
         #     pass
+
+
 

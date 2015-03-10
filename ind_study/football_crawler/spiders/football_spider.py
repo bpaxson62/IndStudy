@@ -15,6 +15,9 @@ class FootballSpider(CrawlSpider):
     start_urls = [
         "http://www.footballsfuture.com/phpBB2/"
     ]
+
+    pipelines = ['SQLPipeline']
+    
     rules = (
         # restrict_xpaths =('//span/a[@class = "forumlink]'),callback=('parse_items')
         Rule(LinkExtractor(restrict_xpaths=('//span/a[@class = "forumlink"]'),
