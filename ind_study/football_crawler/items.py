@@ -23,7 +23,7 @@ class AuthorItem(scrapy.Item):
     geo_location = scrapy.Field()
     num_posts = scrapy.Field()
 
-class TestItem(scrapy.Item):l
+class TestItem(scrapy.Item):
     post_title = scrapy.Field()
     page = scrapy.Field()
     team = scrapy.Field()
