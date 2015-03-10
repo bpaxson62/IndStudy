@@ -1,0 +1,9 @@
+*.class
+*build.fxbuild
+*.iml
+*.project
+*.classpath
+out/
+
+.idea/
+/bin/
