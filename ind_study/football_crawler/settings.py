@@ -8,11 +8,11 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
-BOT_NAME = 'tutorial'
+BOT_NAME = 'football_crawler'
 
-SPIDER_MODULES = ['tutorial.spiders']
-NEWSPIDER_MODULE = 'tutorial.spiders'
-ITEM_PIPELINES = {'tutorial.pipelines.SQLPipeline': 1,
+SPIDER_MODULES = ['football_crawler.spiders']
+NEWSPIDER_MODULE = 'football_crawler.spiders'
+ITEM_PIPELINES = {'football_crawler.pipelines.SQLPipeline': 1,
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
