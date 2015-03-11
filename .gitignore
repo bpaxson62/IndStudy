@@ -2,6 +2,7 @@
 *.pyc
 *build.fxbuild
 *.iml
+*.csv
 *.project
 *.classpath
 out/
