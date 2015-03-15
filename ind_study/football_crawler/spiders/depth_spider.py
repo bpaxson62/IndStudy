@@ -4,9 +4,12 @@ from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.selector import Selector
 from scrapy.contrib.linkextractors import LinkExtractor
 from scrapy.contrib.loader import ItemLoader
-from ..items import PostItem, AuthorItem, TestItem
+from ..items import DepthItemLoader
+from ..items import PostItem, AuthorItem, DepthItem
 
 # scrapy crawl ninfo -o myinfo.csv -t csv
+# scrapy crawl myspider -o items.csv
+
 
 def parse_urls():
         my_url_list = []
@@ -24,16 +27,16 @@ class DepthSpider(CrawlSpider):
     pipelines = ['']
 
     rules = (
+        # allow=(r'http://www.footballsfuture.com/phpBB2/viewforum\.php\?f=')
         # restrict_xpaths =('//span/a[@class = "forumlink]'),callback=('parse_items')
-        Rule(LinkExtractor(restrict_xpaths=('//span/a[@class = "forumlink"]'),
-                           allow=(r'http://www.footballsfuture.com/phpBB2/viewforum\.php\?f='), ), ),
-        Rule(LinkExtractor(restrict_xpaths=('//span/a[@class = "topictitle"]'), ),
-             callback='parse_item', follow=True, ),
-        Rule(LinkExtractor(restrict_xpaths=('//span[@class = "nav"]/a[text()="Next"]'), ),
+        # Rule(LinkExtractor(restrict_xpaths=('//span/a[@class = "forumlink"]'), ), ),
+        Rule(LinkExtractor(restrict_xpaths=('//span/a[@class = "topictitle"]'), ), callback='parse_item', follow=True, ),
+        Rule(LinkExtractor(restrict_xpaths=('//span[@class = "nav"]/a[text()="Next"]'),
+                           allow=(r'http://www.footballsfuture.com/phpBB2/viewforum\.php\?f=') ), follow=True, ),
+        Rule(LinkExtractor(restrict_xpaths=('//span[@class = "gensmall"]/b/a[text()="Next"]'), ),
              callback='parse_item', follow=True, ),
 
     )
-
 
     def parse_item(self, response):
         # select_names = response.selector.xpath('//tr/td/span[@class="name"]/b').extract()
@@ -51,11 +54,17 @@ class DepthSpider(CrawlSpider):
         #team = scrapy.Field()
         #date = scrapy.Field()
         # abc = datetime.strptime(select_date[0][8:], "%a %b %d, %Y %H:%M %p")
-        l1 = ItemLoader(item=TestItem(), response=response)
+        l1 = DepthItemLoader(item=DepthItem(), response=response)
         l1.add_xpath('post_title', '//tr/td/a[@class = "maintitle"]/text()')
+        # my_date = response.selector.xpath('//tr/td[@width="100%"][1]/span[@class = "postdetails"]/text()')[0].extract()
         l1.add_xpath('date', '//tr/td[@width="100%"][1]/span[@class = "postdetails"]/text()')
         l1.add_xpath('team', '//tr/td[2]/span[@class = "nav"]/a[@class = "nav"][2]/text()')
-        l1.add_xpath('page', '//tr/td/span[@class = "gensmall"]/b/b/text()')
+        page_number = response.selector.xpath('//tr/td/span[@class = "gensmall"]/b/b/text()')
+        if not page_number:
+            l1.add_value('page', u'1')
+        else:
+            l1.add_xpath('page', '//tr/td/span[@class = "gensmall"]/b/b/text()')
+
         return l1.load_item()
 
 
