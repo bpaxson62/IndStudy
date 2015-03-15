@@ -5,6 +5,6 @@
 *.project
 *.classpath
 out/
-
+*.sqlite3
 .idea/
 /bin/

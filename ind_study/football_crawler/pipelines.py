@@ -42,7 +42,7 @@ class SQLPipeline(object):
 
     def create_tables(self, filepath):
         conn = sqlite3.connect(filepath)
-        conn.execute("CREATE TABLE Authors( author_id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, geo_loc );")
+        conn.execute("CREATE TABLE Authors( author_id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, geo_loc TEXT);")
         conn.execute(
             "CREATE TABLE Posts( post_id INTEGER PRIMARY KEY AUTOINCREMENT, author_id INTEGER, "
             "FOREIGN KEY(author_id) REFERENCES Authors(author_id), Name TEXT, date TIMESTAMP, content TEXT, team TEXT"
