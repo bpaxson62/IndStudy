@@ -20,7 +20,7 @@ def parse_urls():
 class DepthSpider(CrawlSpider):
 
     name = "depth"
-    download_delay = 2
+    # download_delay = 2
     allowed_domains = ["footballsfuture.com"]
     start_urls = parse_urls()
 

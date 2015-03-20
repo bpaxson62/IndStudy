@@ -1,0 +1,43 @@
+      #forum page num [0]=current [1] = max response.selector.xpath('//tr/td[@align="left" and @colspan="3"]/span[@class = "nav"]/b/text()').extract()
+        #forum title response.selector.xpath('//tr/td/a[@class = "maintitle"]/text()').extract()
+        #forum topic response.selector.xpath('//tr/td[2]/span[@class = "nav"]/a[@class = "nav"][2]/text()').extract()
+        #forum date response.selector.xpath('//tr/td[@width="100%"][1]/span[@class = "postdetails"]/text()').extract()
+        #forum body response.selector.xpath('//tr/td[not(@class="quote")]/span[@class="postbody" and text()]')
+        #forum body response.selector.xpath('//td[@class="row2" or @class ="row1" and @width="100%" and @valign="top" and @height="28"]/table[not(@height="18")]')
+
+        # r = re.compile(r'(\d)')
+        # a = Selector(text=body).xpath('//span/a[@class = 'forumlink']/@href').re.search(r, ' ')
+
+        # a.extract()
+        # for iter in a:
+        #     print(iter.re(r))
+        # filename = response.url.split("/")[-2]
+        # with open(filename, 'wb') as f:
+        #     f.write(response.body)
+
+
+
+          #TODO clean body data
+        select_bodies = response.selector.xpath('//tr/td/span[@class="postbody"]/text()').extract()
+        select_title = response.selector.xpath('//tr/td/a[@class = "maintitle"]/text()').extract()
+        #TODO: select first() for topic
+        select_team = response.selector.xpath('//tr/td[2]/span[@class = "nav"]/a[@class = "nav"][2]/text()').extract()
+        #TODO: format date
+        select_date = response.selector.xpath('//tr/td[@width="100%"][1]/span[@class = "postdetails"]/text()').extract()
+
+
+           # Rule(LinkExtractor(restrict_xpaths = ('//span[@class = "nav"]/a[@class = "topictitle"]'),),
+        # callback = 'parse_item'),
+
+
+        # navbar xpath :::: response.selector.xpath('//span[@class = "nav"]/a[text()="Next"]').extract()
+
+        #some examples rules
+        # Rule(LinkExtractor(allow=('seasoncode\=E\d+\&gamenumber\=\d+\&phasetypecode\=\w+',)),follow=True),
+        # Rule(LinkExtractor(allow=('gamenumber\=\d+\&phasetypecode\=\w+\&gamecode\=\d+\&seasoncode\=E\d+',)),callback='parse_item')
+
+
+         #abc = datetime.strptime(select_date[0][8:], "%a %b %d, %Y %H:%M %p")
+        # abc
+        # datetime.datetime(2014, 10, 24, 1, 20)
+

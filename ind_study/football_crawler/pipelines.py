@@ -11,7 +11,7 @@ from os import path
 
 
 class SQLPipeline(object):
-    filepath = 'test.db'
+    filepath = 'test6.sqlite3'
 
     def __init__(self):
         self.conn = None
@@ -21,18 +21,26 @@ class SQLPipeline(object):
     def process_item(self, item, spider):
         if 'SQLPipeline' not in getattr(spider, 'pipelines'):
             return item
+
         try:
-            self.conn.execute('INSERT into Authors VALUES(?,?)',
-                              (item['user_name'], item['date'],))
+            self.conn.execute('INSERT into Authors VALUES(NULL,?,?,?)', item['user_name'], item['num_posts'],
+                              item['geo_location'])
         except:
-            print 'Failed to insert item: ' + item['user_name']
+            print 'Failed to insert' + item['user_name']
+        try:
+            self.conn.execute('INSERT into Posts VALUES(NULL,?,?,?,?,?,?,?)',
+                              (item['author_name'], item['post_title'], item['date'], item['content'],
+                               item['team'], item['position'],
+                               item['page']))
+        except:
+            print 'Failed to insert item: ' + item['team']
             return item
 
     def initialize(self):
         if path.exists(self.filepath):
-            self.conn = sqlite3.connect(self.filepath)
+            self.conn = sqlite3.connect(self.filepath, detect_types=sqlite3.PARSE_DECLTYPES),
         else:
-            self.conn = self.create_table(self.filepath)
+            self.conn = self.create_tables(self.filepath)
 
     def finalize(self):
         if self.conn is not None:
@@ -41,11 +49,15 @@ class SQLPipeline(object):
             self.conn = None
 
     def create_tables(self, filepath):
-        conn = sqlite3.connect(filepath)
-        conn.execute("CREATE TABLE Authors( author_id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, geo_loc TEXT);")
+        conn = sqlite3.connect(filepath, detect_types=sqlite3.PARSE_DECLTYPES)
         conn.execute(
-            "CREATE TABLE Posts( post_id INTEGER PRIMARY KEY AUTOINCREMENT, author_id INTEGER, "
-            "FOREIGN KEY(author_id) REFERENCES Authors(author_id), Name TEXT, date TIMESTAMP, content TEXT, team TEXT"
-            "position INTEGER, page INTEGER);")
+            "CREATE TABLE Authors( author_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, num_posts INTEGER, "
+            "geo_loc TEXT);")
+        conn.execute(
+            "CREATE TABLE Posts( post_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "post_author TEXT, title TEXT, "
+            "date TIMESTAMP, content TEXT, team TEXT,"
+            "position INTEGER, page INTEGER,"
+            "FOREIGN KEY(post_author) REFERENCES Authors(name));")
         conn.commit()
         return conn
